@@ -19,40 +19,39 @@ public class Main {
     private static final String dayID = "56";
 
     public static void main(String[] args) throws InterruptedException {
-//        Scanner sc= new Scanner(System.in);
-//        System.out.println("Please enter command line as: \n" +
-//                "numThreads < 1024, " +
-//                "numSkiers < 100000, " +
-//                "5 < numLifts < 60, " +
-//                "numRuns < 20/Skier, " +
-//                "port");
-//        String inputStr = sc.next();
-//        String[] strings = inputStr.split(",");
-//
-//        if(strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
-//                || Integer.parseInt(strings[1]) > MAX_NUM_SKIERS
-//                || Integer.parseInt(strings[2]) > MAX_NUM_LIFTS
-//                || Integer.parseInt(strings[2]) < MIN_NUM_LIFTS
-//                || Integer.parseInt(strings[3]) > MAX_NUM_RUNS) {
-//            System.out.println("Invalid commandLine, please enter: \n" +
-//                    "numThreads < 1024, " +
-//                    "numSkiers < 100000, " +
-//                    "5 < numLifts < 60, " +
-//                    "numRuns < 20/Skier, " +
-//                    "port");
-//            return;
-//        }
-//        CommandLine commandLine = new CommandLine(strings);
-//        int NUM_THREADS = commandLine.getNumThreads();
-//        int numRuns = commandLine.getNumRuns();
-//        int numSkiers = commandLine.getNumSkiers();
-//        int numLifts = commandLine.getNumLifts();
+        Scanner sc= new Scanner(System.in);
+        System.out.println("Please enter command line as: \n" +
+                "numThreads < 1024, " +
+                "numSkiers < 100000, " +
+                "5 < numLifts < 60, " +
+                "numRuns < 20/Skier, " +
+                "port");
+        String inputStr = sc.next();
+        String[] strings = inputStr.split(",");
 
-        int NUM_THREADS = 32;
-        int numRuns = 10;
-        int numSkiers = 20000;
-        int numLifts = 40;
-
+        if(strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
+                || Integer.parseInt(strings[1]) > MAX_NUM_SKIERS
+                || Integer.parseInt(strings[2]) > MAX_NUM_LIFTS
+                || Integer.parseInt(strings[2]) < MIN_NUM_LIFTS
+                || Integer.parseInt(strings[3]) > MAX_NUM_RUNS) {
+            System.out.println("Invalid commandLine, please enter: \n" +
+                    "numThreads < 1024, " +
+                    "numSkiers < 100000, " +
+                    "5 < numLifts < 60, " +
+                    "numRuns < 20/Skier, " +
+                    "port");
+            return;
+        }
+        CommandLine commandLine = new CommandLine(strings);
+        int NUM_THREADS = commandLine.getNumThreads();
+        int numRuns = commandLine.getNumRuns();
+        int numSkiers = commandLine.getNumSkiers();
+        int numLifts = commandLine.getNumLifts();
+//set input
+//        int NUM_THREADS = 256;
+//        int numRuns = 10;
+//        int numSkiers = 20000;
+//        int numLifts = 40;
 
         AtomicInteger successfulReq = new AtomicInteger(0);
         AtomicInteger failedReq = new AtomicInteger(0);
@@ -64,11 +63,11 @@ public class Main {
         //Initialize phase1
         int numOfThreads_phase1 = NUM_THREADS/4;
         int numOfRequest_phase1 = (int) (numRuns * 0.2) * (numSkiers/numOfThreads_phase1);
-        CountDownLatch phase1_latch = new CountDownLatch((int) (numOfThreads_phase1 * 0.2));
+        CountDownLatch phase1_latch = new CountDownLatch((int) Math.ceil (numOfThreads_phase1 * 0.2));
         //Initialize phase2
         int numOfThreads_phase2 = NUM_THREADS;
-        int numOfRequest_phase2 = (int)(numRuns * 0.6) * (numSkiers/NUM_THREADS);
-        CountDownLatch phase2_latch = new CountDownLatch((int) (numOfThreads_phase2 * 0.2));
+        int numOfRequest_phase2 = (int) (numRuns * 0.6) * (numSkiers/numOfThreads_phase2);
+        CountDownLatch phase2_latch = new CountDownLatch((int) Math.ceil (numOfThreads_phase2 * 0.2));
         //Initialize phase3
         int numOfThreads_phase3 = (int) 0.1 * NUM_THREADS;
         int numOfRequest_phase3 = (int)(0.1 * numRuns);
@@ -93,12 +92,11 @@ public class Main {
         long afterRun = System.currentTimeMillis();
         long wallTime = (afterRun - beforeRun)/1000;
 
-        System.out.println("**********Output Window**************");
+        //Print Part One
+        System.out.println("**********Output Part One**************");
         System.out.println("Number of successful requests sent is: " + outputFile.getSuccessfulReq().get());
         System.out.println("Number of unsuccessful requests sent is: " + outputFile.getFailedReq().get());
         System.out.println("Total run-time/wall-time is: " + wallTime + "s");
         System.out.println("Total throughput in requests per second: " + outputFile.getTotalReq().get()/wallTime);
-        //write to csv file
-        outputFile.writeToCsvFile("/Users/jm/Documents/CS6650/output_file.csv");
     }
 }

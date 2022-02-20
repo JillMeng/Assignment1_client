@@ -33,7 +33,7 @@ public class Phase {
         this.outputFile = outputFile;
     }
 
-    public void run() throws InterruptedException {
+    public void run() {
         for (int i = 0; i < numThreads; i++) {
             Integer skierIDStart = i * (numSkiers / (numThreads)) + 1;
             Integer SkierIDEnd = (i + 1) * (numSkiers / (numThreads));

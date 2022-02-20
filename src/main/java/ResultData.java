@@ -14,6 +14,10 @@ public class ResultData {
     private AtomicInteger totalReq;
     private List<String[]> dataLines;
 
+    public ResultData() {
+
+    }
+
     public ResultData(AtomicInteger successfulReq, AtomicInteger failedReq, AtomicInteger totalReq, List<String[]> dataLines) {
         this.successfulReq = successfulReq;
         this.failedReq = failedReq;
@@ -53,32 +57,32 @@ public class ResultData {
         return dataLines;
     }
 
-    public void writeToCsvFile(String filePath)
-    {
-        // first create file object for file placed at location
-        // specified by filepath
-        File file = new File(filePath);
-        try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            //{start time, request type (ie POST), latency, response code}.
-            String[] header = { "Start time", "Request Type", "Latency", "Response code"};
-            writer.writeNext(header);
-
-            // add data to csv
-            for(int i = 0; i< dataLines.size(); i++) {
-                writer.writeNext(dataLines.get(i));
-            }
-            // closing writer connection
-            writer.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void writeToCsvFile(String filePath)
+//    {
+//        // first create file object for file placed at location
+//        // specified by filepath
+//        File file = new File(filePath);
+//        try {
+//            // create FileWriter object with file as parameter
+//            FileWriter outputfile = new FileWriter(file);
+//
+//            // create CSVWriter object filewriter object as parameter
+//            CSVWriter writer = new CSVWriter(outputfile);
+//
+//            // adding header to csv
+//            //{start time, request type (ie POST), latency, response code}.
+//            String[] header = { "Start time", "Request Type", "Latency", "Response code"};
+//            writer.writeNext(header);
+//
+//            // add data to csv
+//            for(int i = 0; i< dataLines.size(); i++) {
+//                writer.writeNext(dataLines.get(i));
+//            }
+//            // closing writer connection
+//            writer.close();
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

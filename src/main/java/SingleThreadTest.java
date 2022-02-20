@@ -7,9 +7,9 @@ import io.swagger.client.model.LiftRide;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SingleThread implements Runnable {
+public class SingleThreadTest implements Runnable {
 
-    private static final String BASE_PATH = "http://35.89.15.198:8080/Assignment1_server_war/";
+        private static final String BASE_PATH = "http://35.89.15.198:8080/Assignment1_server_war/";
 //    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
 
     private Integer resortID;
@@ -25,7 +25,7 @@ public class SingleThread implements Runnable {
     private CountDownLatch mainCountDown;
     private ResultData outputFile;
 
-    public SingleThread(Integer resortID, String seasonID, String dayID, Integer skierIDStart, Integer skierIDEnd, Integer startTime, Integer endTime, Integer numLifts, int numOfRequest, CountDownLatch phaseCountDown, CountDownLatch mainCountDown, ResultData outputFile) {
+    public SingleThreadTest(Integer resortID, String seasonID, String dayID, Integer skierIDStart, Integer skierIDEnd, Integer startTime, Integer endTime, Integer numLifts, int numOfRequest, CountDownLatch phaseCountDown, CountDownLatch mainCountDown, ResultData outputFile) {
         this.resortID = resortID;
         this.seasonID = seasonID;
         this.dayID = dayID;
@@ -45,6 +45,8 @@ public class SingleThread implements Runnable {
         ApiClient client = apiInstance.getApiClient();
         client.setBasePath(BASE_PATH);
 
+        long sumLatency = 0;
+        long start = System.currentTimeMillis();
         for (int i = 0; i < numOfRequest; i++) {
             //generate random parameters
             Integer skierID = ThreadLocalRandom.current().nextInt(skierIDStart, skierIDEnd);
@@ -59,35 +61,67 @@ public class SingleThread implements Runnable {
 
             //if response code is not200/201 try same request data up to 5 times
             int badRequest = 0;
-            int respondCode;
+            long timeStart = 0;
+            long timeEnd = 0;
+            long latency = 0;
+            int respondCode = 0;
             while(badRequest < 5) {
-
+                //take a timestamp before sending request
+                timeStart = System.currentTimeMillis();
                 try {
                     ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(body, resortID, seasonID, dayID, skierID);
-                    outputFile.addTotalReq(1);
+                    //after the response is received, take a timestamp
+                    timeEnd = System.currentTimeMillis();
                     respondCode = response.getStatusCode();
                     //successful requests
                     if(respondCode == 200 || respondCode == 201) {
-                        outputFile.addSuccessfulReq(1);
                         System.out.println(respondCode);
+                        System.out.println(Thread.currentThread());
                         break;
                     } else {
                         badRequest++;
                         System.out.println(respondCode);
+                        System.out.println(Thread.currentThread());
                     }
                 } catch (ApiException e) {
                     badRequest++;
                     System.err.println("Exception when calling SkiersApi#writeNewLiftRideWithHttpInfo");
+                    respondCode = e.getCode();
                     e.printStackTrace();
                 }
             }
-            //if request failed 5 times, count as a failed request
-            if(badRequest == 5) {
-                outputFile.addFailedReq(1);
-            }
+            //single request latency
+            latency = timeEnd - timeStart;
+            sumLatency += latency;
+
         }
+        long end = System.currentTimeMillis();
         phaseCountDown.countDown();
         mainCountDown.countDown();
+        //cal average latency
+        long meanLatency = sumLatency/numOfRequest;
+        //get expected throughput with Little's Law
+        long expectedThroughput = numOfRequest/(end - start);
+        System.out.println("The expected throughput is: " + expectedThroughput);
+    }
+
+    public static void main(String[] args) {
+        Integer resortID = 56;
+        String seasonID = "56";
+        String dayID = "56";
+        Integer skierIDStart = 1;
+        Integer skierIDEnd = 20;
+        Integer startTime = 1;
+        Integer endTime = 90;
+        Integer numLifts = 40;
+        int numOfRequest = 10000;
+        CountDownLatch phaseCountDown = new CountDownLatch(0);
+        CountDownLatch mainCountDown = new CountDownLatch(0);
+        ResultData outputFile = new ResultData();
+        SingleThreadTest threadTest = new SingleThreadTest(resortID,seasonID,dayID,skierIDStart,skierIDEnd,
+                startTime,endTime,numLifts,numOfRequest,phaseCountDown,mainCountDown,outputFile);
+
+        threadTest.run();
     }
 
 }
