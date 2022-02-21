@@ -19,7 +19,7 @@ public class Main {
     private static final String dayID = "56";
 
     public static void main(String[] args) throws InterruptedException {
-        Scanner sc= new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         System.out.println("Please enter command line as: \n" +
                 "numThreads < 1024, " +
                 "numSkiers < 100000, " +
@@ -29,7 +29,7 @@ public class Main {
         String inputStr = sc.next();
         String[] strings = inputStr.split(",");
 
-        if(strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
+        if (strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
                 || Integer.parseInt(strings[1]) > MAX_NUM_SKIERS
                 || Integer.parseInt(strings[2]) > MAX_NUM_LIFTS
                 || Integer.parseInt(strings[2]) < MIN_NUM_LIFTS
@@ -56,31 +56,31 @@ public class Main {
         AtomicInteger successfulReq = new AtomicInteger(0);
         AtomicInteger failedReq = new AtomicInteger(0);
         AtomicInteger totalReq = new AtomicInteger(0);
-        List<String[]> outputData = Collections.synchronizedList(new ArrayList());;
+        List<String[]> outputData = Collections.synchronizedList(new ArrayList());
 
         ResultData outputFile = new ResultData(successfulReq, failedReq, totalReq, outputData);
 
         //Initialize phase1
-        int numOfThreads_phase1 = NUM_THREADS/4;
-        int numOfRequest_phase1 = (int) (numRuns * 0.2) * (numSkiers/numOfThreads_phase1);
-        CountDownLatch phase1_latch = new CountDownLatch((int) Math.ceil (numOfThreads_phase1 * 0.2));
+        int numOfThreads_phase1 = NUM_THREADS / 4;
+        int numOfRequest_phase1 = (int) (numRuns * 0.2) * (numSkiers / numOfThreads_phase1);
+        CountDownLatch phase1_latch = new CountDownLatch((int) Math.ceil(numOfThreads_phase1 * 0.2));
         //Initialize phase2
         int numOfThreads_phase2 = NUM_THREADS;
-        int numOfRequest_phase2 = (int) (numRuns * 0.6) * (numSkiers/numOfThreads_phase2);
-        CountDownLatch phase2_latch = new CountDownLatch((int) Math.ceil (numOfThreads_phase2 * 0.2));
+        int numOfRequest_phase2 = (int) (numRuns * 0.6) * (numSkiers / numOfThreads_phase2);
+        CountDownLatch phase2_latch = new CountDownLatch((int) Math.ceil(numOfThreads_phase2 * 0.2));
         //Initialize phase3
         int numOfThreads_phase3 = (int) 0.1 * NUM_THREADS;
-        int numOfRequest_phase3 = (int)(0.1 * numRuns);
+        int numOfRequest_phase3 = (int) (0.1 * numRuns);
         CountDownLatch phase3_latch = new CountDownLatch(numOfRequest_phase3);
         //overall countdown latch
-        CountDownLatch  mainLatch = new CountDownLatch(numOfThreads_phase1+numOfThreads_phase2+numOfThreads_phase3);
+        CountDownLatch mainLatch = new CountDownLatch(numOfThreads_phase1 + numOfThreads_phase2 + numOfThreads_phase3);
 
         Phase phase1 = new Phase(resortID, seasonID, dayID, 1, 90, numLifts, numOfRequest_phase1,
-                numOfThreads_phase1, numSkiers, phase1_latch,mainLatch, outputFile);
+                numOfThreads_phase1, numSkiers, phase1_latch, mainLatch, outputFile);
         Phase phase2 = new Phase(resortID, seasonID, dayID, 91, 360, numLifts, numOfRequest_phase2,
-                numOfThreads_phase2, numSkiers, phase2_latch,mainLatch, outputFile);
+                numOfThreads_phase2, numSkiers, phase2_latch, mainLatch, outputFile);
         Phase phase3 = new Phase(resortID, seasonID, dayID, 361, 420, numLifts, numOfRequest_phase3,
-                numOfThreads_phase3, numSkiers, phase3_latch,mainLatch, outputFile);
+                numOfThreads_phase3, numSkiers, phase3_latch, mainLatch, outputFile);
 
         long beforeRun = System.currentTimeMillis();
         phase1.run();
@@ -90,13 +90,13 @@ public class Main {
         phase3.run();
         mainLatch.await();
         long afterRun = System.currentTimeMillis();
-        long wallTime = (afterRun - beforeRun)/1000;
+        long wallTime = (afterRun - beforeRun) / 1000;
 
         //Print Part One
         System.out.println("**********Output Part One**************");
         System.out.println("Number of successful requests sent is: " + outputFile.getSuccessfulReq().get());
         System.out.println("Number of unsuccessful requests sent is: " + outputFile.getFailedReq().get());
         System.out.println("Total run-time/wall-time is: " + wallTime + "s");
-        System.out.println("Total throughput in requests per second: " + outputFile.getTotalReq().get()/wallTime);
+        System.out.println("Total throughput in requests per second: " + outputFile.getTotalReq().get() / wallTime);
     }
 }

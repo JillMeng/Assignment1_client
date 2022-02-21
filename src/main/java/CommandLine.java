@@ -21,7 +21,7 @@ public class CommandLine {
     }
 
     public boolean validCommand(String[] args) {
-        if(args.length != 5) {
+        if (args.length != 5) {
             System.out.println("Missing command parameter.");
             return false;
         } else if (Integer.parseInt(args[0]) > MAX_NUM_THREADS) {

@@ -60,14 +60,14 @@ public class SingleThread implements Runnable {
             //if response code is not200/201 try same request data up to 5 times
             int badRequest = 0;
             int respondCode;
-            while(badRequest < 5) {
+            while (badRequest < 5) {
 
                 try {
                     ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(body, resortID, seasonID, dayID, skierID);
                     outputFile.addTotalReq(1);
                     respondCode = response.getStatusCode();
                     //successful requests
-                    if(respondCode == 200 || respondCode == 201) {
+                    if (respondCode == 200 || respondCode == 201) {
                         outputFile.addSuccessfulReq(1);
                         System.out.println(respondCode);
                         break;
@@ -82,7 +82,7 @@ public class SingleThread implements Runnable {
                 }
             }
             //if request failed 5 times, count as a failed request
-            if(badRequest == 5) {
+            if (badRequest == 5) {
                 outputFile.addFailedReq(1);
             }
         }

@@ -1,11 +1,13 @@
-import io.swagger.client.*;
+import io.swagger.client.ApiClient;
+import io.swagger.client.ApiException;
+import io.swagger.client.ApiResponse;
 import io.swagger.client.api.SkiersApi;
-import io.swagger.client.model.*;
+import io.swagger.client.model.LiftRide;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyClientTest implements Runnable{
+public class MyClientTest implements Runnable {
 
     private final long NUM_REQUEST = 10000;
 
@@ -25,7 +27,7 @@ public class MyClientTest implements Runnable{
         //send 10000 requests to server
         List<Long> latencyLst = new ArrayList<>();
         long sumLatency = 0;
-        for(int i = 0; i<NUM_REQUEST; i++) {
+        for (int i = 0; i < NUM_REQUEST; i++) {
             long startTime = System.currentTimeMillis();
             try {
                 ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(body, resortID, seasonID, dayID, skierID);
@@ -39,9 +41,9 @@ public class MyClientTest implements Runnable{
             sumLatency += aRequestLatency;
         }
         //cal average latency
-        long meanLatency = sumLatency/NUM_REQUEST;
+        long meanLatency = sumLatency / NUM_REQUEST;
         //get expected throughput with Little's Law
-        long expectedThroughput = NUM_REQUEST/meanLatency;
+        long expectedThroughput = NUM_REQUEST / meanLatency;
         System.out.println("The expected throughput is: " + expectedThroughput);
     }
 
