@@ -1,9 +1,10 @@
-import com.opencsv.CSVWriter;
 
-import java.io.File;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,6 +14,10 @@ public class ResultData {
     private AtomicInteger failedReq;
     private AtomicInteger totalReq;
     private List<String[]> dataLines;
+
+    public ResultData() {
+
+    }
 
     public ResultData(AtomicInteger successfulReq, AtomicInteger failedReq, AtomicInteger totalReq, List<String[]> dataLines) {
         this.successfulReq = successfulReq;
@@ -53,31 +58,21 @@ public class ResultData {
         return dataLines;
     }
 
-    public void writeToCsvFile(String filePath)
-    {
-        // first create file object for file placed at location
-        // specified by filepath
-        File file = new File(filePath);
+    public void writeToCsvFile() {
         try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
+            FileWriter sw = new FileWriter("outputData.csv");
+            CSVPrinter printer = new CSVPrinter(sw, CSVFormat.DEFAULT);
 
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-
-            // adding header to csv
-            //{start time, request type (ie POST), latency, response code}.
-            String[] header = { "Start time", "Request Type", "Latency", "Response code"};
-            writer.writeNext(header);
-
-            // add data to csv
-            for(int i = 0; i< dataLines.size(); i++) {
-                writer.writeNext(dataLines.get(i));
+            // adding header to csv -> {start time, request type (ie POST), latency, response code}.
+            String[] header = {"Start Time", "Request Type", "Latency", "Response Code"};
+            printer.printRecord(header);
+            //add data line by line
+            for (int i = 0; i < dataLines.size(); i++) {
+                printer.printRecord(dataLines.get(i));
             }
-            // closing writer connection
-            writer.close();
-        }
-        catch (IOException e) {
+            printer.flush();
+            printer.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

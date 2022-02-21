@@ -10,8 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleThread implements Runnable {
 
-//    private static final String BASE_PATH = "http://35.85.65.57:8080/Assignment1_server_war/";
-    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
+    private static final String BASE_PATH = "http://54.200.15.98:8080/Assignment1_server_war/";
+//    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
 
     private Integer resortID;
     private String seasonID;
@@ -46,11 +46,8 @@ public class SingleThread implements Runnable {
         ApiClient client = apiInstance.getApiClient();
         client.setBasePath(BASE_PATH);
 
-        int numSuccessPOST = 0;
-        int numFailedPOST = 0;
-        int numTotalRequest = 0;
         for (int i = 0; i < numOfRequest; i++) {
-
+            //generate random parameters
             Integer skierID = ThreadLocalRandom.current().nextInt(skierIDStart, skierIDEnd);
             Integer time = ThreadLocalRandom.current().nextInt(startTime, endTime);
             Integer liftID = ThreadLocalRandom.current().nextInt(1, numLifts);
@@ -61,53 +58,49 @@ public class SingleThread implements Runnable {
             body.liftID(liftID);
             body.waitTime(waitTime);
 
-            //if response conde is not 201 try same request data up to 5 times
+            //if response code is not200/201 try same request data up to 5 times
             int badRequest = 0;
             long timeStart = 0;
             long timeEnd = 0;
             long latency = 0;
             int respondCode = 0;
             while(badRequest < 5) {
-                //take start time
+                //take a timestamp before sending request
                 timeStart = System.currentTimeMillis();
                 try {
                     ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(body, resortID, seasonID, dayID, skierID);
-                    numTotalRequest++;
-                    outputFile.addTotalReq(1);
+                    //after the response is received, take a timestamp
                     timeEnd = System.currentTimeMillis();
+                    outputFile.addTotalReq(1);
                     respondCode = response.getStatusCode();
-                    //bad request
+                    //successful requests
                     if(respondCode == 200 || respondCode == 201) {
-                        numSuccessPOST++;
                         outputFile.addSuccessfulReq(1);
                         System.out.println(respondCode);
-                        System.out.println("Post request is successful.");
                         break;
                     } else {
                         badRequest++;
+                        System.out.println(respondCode);
                     }
                 } catch (ApiException e) {
+                    badRequest++;
                     System.err.println("Exception when calling SkiersApi#writeNewLiftRideWithHttpInfo");
                     respondCode = e.getCode();
-//                    e.printStackTrace();
-                    badRequest++;
+                    e.printStackTrace();
                 }
             }
+            //if request failed 5 times, count as a failed request
             if(badRequest == 5) {
-                numFailedPOST++;
                 outputFile.addFailedReq(1);
             }
+            //single request latency
             latency = timeEnd - timeStart;
 
-            //Write out a data to ResultData
-            // {start time, request type (ie POST), latency, response code} to csv
+            //Write out a data to ResultData -> {start time, request type (ie POST), latency, response code} to csv
             Timestamp startTime = new Timestamp(timeStart);
             String[] dataLine = {startTime.toString(), "POST",
-                    Long.toString(latency) + "ms" ,Integer.toString(respondCode)};
+                    Long.toString(latency), Integer.toString(respondCode)};
             outputFile.addDataLine(dataLine);
-//            outputFile.addSuccessfulReq(numSuccessPOST);
-//            outputFile.addFailedReq(numFailedPOST);
-//            outputFile.addTotalReq(numTotalRequest);
         }
         phaseCountDown.countDown();
         mainCountDown.countDown();

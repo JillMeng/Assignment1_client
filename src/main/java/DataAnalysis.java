@@ -4,12 +4,6 @@ import java.util.List;
 
 public class DataAnalysis {
 
-    //mean response time (millisecs)
-    //median response time (millisecs)
-    //throughput = total number of requests/wall time (requests/second)
-    //p99 (99th percentile) response time. Here’s a nice article about why percentiles are important and why calculating them is not always easy. (millisecs)
-    //min and max response time (millisecs)
-
     private ResultData resultFile;
     private long wallTime;
 
@@ -21,7 +15,7 @@ public class DataAnalysis {
     public List<Long> getAllRespTime() {
         List<Long> allRespTime = new ArrayList<>();
         for(String[] dataLine: resultFile.getDataLines()) {
-            Long eachLatency = Long.parseLong(dataLine[2]);
+            long eachLatency = Long.parseLong(dataLine[2]);
             allRespTime.add(eachLatency);
         }
         return allRespTime;
@@ -37,7 +31,7 @@ public class DataAnalysis {
         return meanVal;
     }
 
-    public long medianrepTime() {
+    public long medianRespTime() {
         List<Long> sortedRespTime = getAllRespTime();
         Collections.sort(sortedRespTime);
         long medianVal = 0;
@@ -51,18 +45,25 @@ public class DataAnalysis {
     }
 
     //throughput = total number of requests/wall time (requests/second)
-    public double throughput() {
+    public long throughput() {
         return resultFile.getTotalReq().get()/wallTime;
     }
 
+    //p99 (99th percentile) response time.
+    public long p99RespTime() {
+        List<Long> sortedRespTime = getAllRespTime();
+        Collections.sort(sortedRespTime);
+        int pivot = (int) Math.ceil (0.99 * sortedRespTime.size());
+        return sortedRespTime.get(pivot-1);
+    }
 
-    public long minRepTime() {
+    public long minRespTime() {
         List<Long> sortedRespTime = getAllRespTime();
         Collections.sort(sortedRespTime);
         return sortedRespTime.get(0);
     }
 
-    public long maxRepTime() {
+    public long maxRespTime() {
         List<Long> sortedRespTime = getAllRespTime();
         Collections.sort(sortedRespTime);
         return sortedRespTime.get(sortedRespTime.size()-1);
