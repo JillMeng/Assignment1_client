@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleThreadTest implements Runnable {
 
-    private static final String BASE_PATH = "http://35.89.15.198:8080/Assignment1_server_war/";
+    private static final String BASE_PATH = "http://54.189.154.233:8080/Assignment1_server_war/";
 //    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
 
     private Integer resortID;
@@ -49,7 +49,7 @@ public class SingleThreadTest implements Runnable {
         Integer startTime = 1;
         Integer endTime = 90;
         Integer numLifts = 40;
-        int numOfRequest = 10000;
+        int numOfRequest = 20000;
         CountDownLatch phaseCountDown = new CountDownLatch(0);
         CountDownLatch mainCountDown = new CountDownLatch(0);
         ResultData outputFile = new ResultData();
@@ -114,9 +114,7 @@ public class SingleThreadTest implements Runnable {
         mainCountDown.countDown();
         //cal average latency
         long meanLatency = sumLatency / numOfRequest;
-        //get expected throughput with Little's Law
-        long expectedThroughput = numOfRequest / meanLatency;
-        System.out.println("The expected throughput is: " + expectedThroughput);
+        System.out.println("The mean Latency for 10000 request is: " + meanLatency);
     }
 
 }

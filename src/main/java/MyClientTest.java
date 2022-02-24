@@ -15,8 +15,8 @@ public class MyClientTest implements Runnable {
     public void run() {
         SkiersApi apiInstance = new SkiersApi();
         ApiClient client = apiInstance.getApiClient();
-//        client.setBasePath("http://54.218.248.15:8080/Assignment1_server_war/");
-        client.setBasePath("http://localhost:8080/Assignment1_server_war_exploded/");
+        client.setBasePath("http://54.189.154.233:8080/Assignment1_server_war/");
+//        client.setBasePath("http://localhost:8080/Assignment1_server_war_exploded/");
 
         Integer resortID = 12; // Integer | ID of the resort of interest
         String seasonID = "2019"; // Integer | ID of the resort of interest
@@ -42,9 +42,8 @@ public class MyClientTest implements Runnable {
         }
         //cal average latency
         long meanLatency = sumLatency / NUM_REQUEST;
-        //get expected throughput with Little's Law
-        long expectedThroughput = NUM_REQUEST / meanLatency;
-        System.out.println("The expected throughput is: " + expectedThroughput);
+
+        System.out.println("The meanLatency is: " + meanLatency);
     }
 
     public static void main(String[] args) {
