@@ -53,7 +53,6 @@ public class Main {
         int numSkiers = 20000;
         int numLifts = 40;
 
-
         AtomicInteger successfulReq = new AtomicInteger(0);
         AtomicInteger failedReq = new AtomicInteger(0);
         AtomicInteger totalReq = new AtomicInteger(0);

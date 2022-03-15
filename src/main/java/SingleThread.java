@@ -13,8 +13,8 @@ public class SingleThread implements Runnable {
 
 //    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
 //    private static final String BASE_PATH = "http://my-lb-1757302362.us-west-2.elb.amazonaws.com";
-    private static final String BASE_PATH = "http://my-lb-1757302362.us-west-2.elb.amazonaws.com:8080/Assignment1_server_war/";
-//    private static final String BASE_PATH = "http://44.233.183.32:8080/Assignment1_server_war/";
+//    private static final String BASE_PATH = "http://my-lb-1757302362.us-west-2.elb.amazonaws.com:8080/Assignment1_server_war/";
+    private static final String BASE_PATH = "http://44.233.183.32:8080/Assignment1_server_war/";
 
     private Integer resortID;
     private String seasonID;
