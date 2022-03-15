@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleThreadTest implements Runnable {
 
-    private static final String BASE_PATH = "http://54.189.154.233:8080/Assignment1_server_war/";
+    private static final String BASE_PATH = "http://34.217.126.53:8080/Assignment1_server_war/";
 //    private static final String BASE_PATH = "http://localhost:8080/Assignment1_server_war_exploded/";
 
     private Integer resortID;

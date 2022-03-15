@@ -19,45 +19,45 @@ public class Main {
     private static final String dayID = "56";
 
     public static void main(String[] args) throws InterruptedException {
-        Scanner sc= new Scanner(System.in);
-        System.out.println("Please enter command line as: \n" +
-                "numThreads < 1024, " +
-                "numSkiers < 100000, " +
-                "5 < numLifts < 60, " +
-                "numRuns < 20/Skier, " +
-                "port");
-        String inputStr = sc.next();
-        String[] strings = inputStr.split(",");
+//        Scanner sc= new Scanner(System.in);
+//        System.out.println("Please enter command line as: \n" +
+//                "numThreads < 1024, " +
+//                "numSkiers < 100000, " +
+//                "5 < numLifts < 60, " +
+//                "numRuns < 20/Skier, " +
+//                "port");
+//        String inputStr = sc.next();
+//        String[] strings = inputStr.split(",");
+//
+//        if(strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
+//                || Integer.parseInt(strings[1]) > MAX_NUM_SKIERS
+//                || Integer.parseInt(strings[2]) > MAX_NUM_LIFTS
+//                || Integer.parseInt(strings[2]) < MIN_NUM_LIFTS
+//                || Integer.parseInt(strings[3]) > MAX_NUM_RUNS) {
+//            System.out.println("Invalid commandLine, please enter: \n" +
+//                    "numThreads < 1024, " +
+//                    "numSkiers < 100000, " +
+//                    "5 < numLifts < 60, " +
+//                    "numRuns < 20/Skier, " +
+//                    "port");
+//            return;
+//        }
+//        CommandLine commandLine = new CommandLine(strings);
+//        int NUM_THREADS = commandLine.getNumThreads();
+//        int numRuns = commandLine.getNumRuns();
+//        int numSkiers = commandLine.getNumSkiers();
+//        int numLifts = commandLine.getNumLifts();
 
-        if(strings.length != 5 || Integer.parseInt(strings[0]) > MAX_NUM_THREADS
-                || Integer.parseInt(strings[1]) > MAX_NUM_SKIERS
-                || Integer.parseInt(strings[2]) > MAX_NUM_LIFTS
-                || Integer.parseInt(strings[2]) < MIN_NUM_LIFTS
-                || Integer.parseInt(strings[3]) > MAX_NUM_RUNS) {
-            System.out.println("Invalid commandLine, please enter: \n" +
-                    "numThreads < 1024, " +
-                    "numSkiers < 100000, " +
-                    "5 < numLifts < 60, " +
-                    "numRuns < 20/Skier, " +
-                    "port");
-            return;
-        }
-        CommandLine commandLine = new CommandLine(strings);
-        int NUM_THREADS = commandLine.getNumThreads();
-        int numRuns = commandLine.getNumRuns();
-        int numSkiers = commandLine.getNumSkiers();
-        int numLifts = commandLine.getNumLifts();
-
-//        int NUM_THREADS = 256;
-//        int numRuns = 10;
-//        int numSkiers = 20000;
-//        int numLifts = 40;
+        int NUM_THREADS = 32;
+        int numRuns = 10;
+        int numSkiers = 20000;
+        int numLifts = 40;
 
 
         AtomicInteger successfulReq = new AtomicInteger(0);
         AtomicInteger failedReq = new AtomicInteger(0);
         AtomicInteger totalReq = new AtomicInteger(0);
-        List<String[]> outputData = Collections.synchronizedList(new ArrayList());;
+        List<String[]> outputData = Collections.synchronizedList(new ArrayList());
 
         ResultData outputFile = new ResultData(successfulReq, failedReq, totalReq, outputData);
 
@@ -91,6 +91,7 @@ public class Main {
         phase3.run();
         mainLatch.await();
         long afterRun = System.currentTimeMillis();
+        //close connection
         long wallTime = (afterRun - beforeRun)/1000;
 
         //Print Part One
