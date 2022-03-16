@@ -7,7 +7,6 @@ import io.swagger.client.model.LiftRide;
 import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class SingleThread implements Runnable {
 
@@ -47,8 +46,6 @@ public class SingleThread implements Runnable {
     public void run() {
         SkiersApi apiInstance = new SkiersApi();
         ApiClient client = apiInstance.getApiClient();
-//        client.setConnectTimeout(3000); // connect timeout
-//        client.setReadTimeout(3000);    // socket timeout
         client.setBasePath(BASE_PATH);
 
         for (int i = 0; i < numOfRequest; i++) {
@@ -74,7 +71,6 @@ public class SingleThread implements Runnable {
                 timeStart = System.currentTimeMillis();
                 try {
                     ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(body, resortID, seasonID, dayID, skierID);
-//                    apiInstance.writeNewLiftRide(body, resortID, seasonID, dayID, skierID);
                     //after the response is received, take a timestamp
                     timeEnd = System.currentTimeMillis();
                     outputFile.addTotalReq(1);
@@ -83,12 +79,10 @@ public class SingleThread implements Runnable {
                     if(respondCode == 200 || respondCode == 201) {
                         outputFile.addSuccessfulReq(1);
                         System.out.println(respondCode);
-//                        System.out.println("request sent.");
                         break;
                     } else {
                         badRequest++;
                         System.out.println(respondCode);
-//                        System.out.println("request did not sent.");
                     }
                 } catch (ApiException e) {
                     badRequest++;

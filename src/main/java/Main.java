@@ -48,7 +48,7 @@ public class Main {
 //        int numSkiers = commandLine.getNumSkiers();
 //        int numLifts = commandLine.getNumLifts();
 
-        int NUM_THREADS = 64;
+        int NUM_THREADS = 512;
         int numRuns = 10;
         int numSkiers = 20000;
         int numLifts = 40;
