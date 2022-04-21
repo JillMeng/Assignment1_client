@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
@@ -15,7 +16,7 @@ public class Main {
 
     //set resort data
     private static final Integer resortID = 56;
-    private static final String seasonID = "56";
+    private static final String seasonID = "2021";
     private static final String dayID = "56";
 
     public static void main(String[] args) throws InterruptedException {
@@ -48,7 +49,7 @@ public class Main {
 //        int numSkiers = commandLine.getNumSkiers();
 //        int numLifts = commandLine.getNumLifts();
 
-        int NUM_THREADS = 512;
+        int NUM_THREADS = 256;
         int numRuns = 10;
         int numSkiers = 20000;
         int numLifts = 40;
@@ -103,13 +104,13 @@ public class Main {
         outputFile.writeToCsvFile();
 
         //Print Part Two
-        DataAnalysis dataAnalysis = new DataAnalysis(outputFile, wallTime);
-        System.out.println("**********Output Part Two**************");
-        System.out.println("Mean response is: " + dataAnalysis.meanRespTime());
-        System.out.println("Median response is: " + dataAnalysis.medianRespTime());
-        System.out.println("Throughput (requests/second) is: " + dataAnalysis.throughput());
-        System.out.println("p99 (99th percentile) response time is: " + dataAnalysis.p99RespTime());
-        System.out.println("Min response time is: " + dataAnalysis.minRespTime());
-        System.out.println("Max response time is: " + dataAnalysis.maxRespTime());
+//        DataAnalysis dataAnalysis = new DataAnalysis(outputFile, wallTime);
+//        System.out.println("**********Output Part Two**************");
+//        System.out.println("Mean response is: " + dataAnalysis.meanRespTime());
+//        System.out.println("Median response is: " + dataAnalysis.medianRespTime());
+//        System.out.println("Throughput (requests/second) is: " + dataAnalysis.throughput());
+//        System.out.println("p99 (99th percentile) response time is: " + dataAnalysis.p99RespTime());
+//        System.out.println("Min response time is: " + dataAnalysis.minRespTime());
+//        System.out.println("Max response time is: " + dataAnalysis.maxRespTime());
     }
 }
